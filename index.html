@@ -344,23 +344,130 @@
 </section>
 
 
-<!-- Teaser video-->
+<!-- Terminal animation -->
 <section class="hero teaser">
   <div class="container is-max-desktop">
-    <div class="hero-body">
-      <!-- TODO: Replace with your teaser video -->
-      <video poster="" id="tree" autoplay controls muted loop height="100%" preload="metadata">
-        <!-- TODO: Add your video file path here -->
-        <source src="static/videos/banner_video.mp4" type="video/mp4">
-      </video>
-      <!-- TODO: Replace with your video description -->
-      <h2 class="subtitle has-text-centered">
-        Aliquam vitae elit ullamcorper tellus egestas pellentesque. Ut lacus tellus, maximus vel lectus at, placerat pretium mi. Maecenas dignissim tincidunt vestibulum. Sed consequat hendrerit nisl ut maximus. 
+    <div class="hero-body" style="display:flex; flex-direction:column; align-items:center;">
+
+      <div id="agentspex-terminal">
+        <div class="aterm-body">
+          <div class="aterm-vmline">vm: persistent</div>
+          <div class="aterm-question-line">
+            <span class="aterm-q">?</span>
+            <span class="aterm-qtext"> What would you like to do? </span><span class="aterm-cursor" id="aterm-cursor">▌</span>
+          </div>
+          <div class="aterm-options" id="aterm-options" style="display:none;"></div>
+        </div>
+      </div>
+
+      <h2 class="subtitle has-text-centered" style="margin-top:1.5rem;">
+        A declarative AI workflow platform — define complex agent tasks in YAML and run them in a sandboxed environment.
       </h2>
     </div>
   </div>
 </section>
-<!-- End teaser video -->
+
+<style>
+#agentspex-terminal {
+  width: 100%;
+  max-width: 480px;
+  background: #1e1e2e;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  font-family: 'Menlo', 'Monaco', 'Consolas', 'Courier New', monospace;
+  font-size: 14.5px;
+  line-height: 1.6;
+  overflow: hidden;
+}
+.aterm-body {
+  padding: 20px 24px 24px;
+}
+.aterm-vmline {
+  color: #585b70;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+.aterm-question-line {
+  margin-bottom: 6px;
+}
+.aterm-q    { color: #89dceb; }
+.aterm-qtext { color: #cdd6f4; }
+.aterm-cursor {
+  color: #cdd6f4;
+  animation: aterm-blink 1s step-end infinite;
+}
+@keyframes aterm-blink { 50% { opacity: 0; } }
+.aterm-option {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  color: #9399b2;
+  white-space: pre;
+  line-height: 1.65;
+}
+.aterm-option.active {
+  color: #89dceb;
+}
+.aterm-arrow {
+  display: inline-block;
+  width: 2ch;
+  color: transparent;
+}
+.aterm-option.active .aterm-arrow {
+  color: #89dceb;
+}
+</style>
+
+<script>
+(function () {
+  const ITEMS = [
+    'Run a workflow',
+    'Start agent',
+    'Write a task plan',
+    'Set up an integration',
+    'Manage sandbox',
+    'View dashboard',
+    'Settings',
+    'Quit',
+  ];
+
+  const cursorEl = document.getElementById('aterm-cursor');
+  const optsEl   = document.getElementById('aterm-options');
+
+  // Build option rows
+  ITEMS.forEach((label, i) => {
+    const div = document.createElement('div');
+    div.className = 'aterm-option';
+    div.id = 'aterm-opt-' + i;
+    div.innerHTML = '<span class="aterm-arrow">❯ </span>' + label;
+    optsEl.appendChild(div);
+  });
+
+  function setActive(idx) {
+    ITEMS.forEach((_, i) => {
+      document.getElementById('aterm-opt-' + i)
+        .classList.toggle('active', i === idx);
+    });
+  }
+
+  // Phase 1: blink cursor on question, then reveal menu
+  setTimeout(() => {
+    cursorEl.style.display = 'none';
+    optsEl.style.display = 'block';
+    setActive(0);
+    setTimeout(cycleMenu, 800);
+  }, 1400);
+
+  // Phase 2: cycle the active item
+  let activeIdx = 0;
+  function cycleMenu() {
+    activeIdx = (activeIdx + 1) % ITEMS.length;
+    setActive(activeIdx);
+    setTimeout(cycleMenu, activeIdx === 0 ? 1400 : 550);
+  }
+})();
+</script>
+<!-- End terminal animation -->
 
 <!-- Paper abstract -->
 <section class="section hero is-light">
